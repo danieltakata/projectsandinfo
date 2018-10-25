@@ -17,6 +17,38 @@ def filledMatch(alist, sign=''):
         if el != alist[0]:
             return False
     return True
+class BooleanDialog(turtle.simpledialog.Dialog):
+    def __init__(self, title, prompt,
+            trueStr=None,falseStr=None,
+            parent=None):
+        if not parent:
+            parent = turtle.TK._default_root
+        self.prompt = prompt
+        self.trueStr = trueStr
+        self.falseStr = falseStr
+        turtle.simpledialog.Dialog.__init__(self, parent, title)
+    def body(self, master):
+        w = turtle.TK.Label(master, text=self.prompt, justify='left')
+        w.grid(row=0, padx=5, sticky='w')
+    def truePress(self):
+        self.result = True
+        self.ok()
+    def falsePress(self):
+        self.result = False
+        self.ok()
+    def buttonbox(self):
+        box = turtle.TK.Frame(self)
+        if not self.trueStr:
+            w = turtle.TK.Button(box, text="True", width=10, command=self.truePress, default='active')
+        else:
+            w = turtle.TK.Button(box, text=self.trueStr, width=10, command=self.truePress, default='active')
+        w.pack(side='left', padx=5, pady=5)
+        if not self.falseStr:
+            w = turtle.TK.Button(box, text="False", width=10, command=self.falsePress)
+        else:
+            w = turtle.TK.Button(box, text=self.falseStr, width=10, command=self.falsePress)
+        w.pack(side='left', padx=5, pady=5)
+        box.pack()
 class TicTacToe:
     def __init__(self,start=str):
         self.grid = [[start() for i in range(3)] for j in range(3)]
@@ -155,7 +187,19 @@ class Display:
                         self.tut2.pd()
         self.tut1.pu()
         self.highlight()
-        self.screen.onscreenclick(self.play)
+        d = BooleanDialog("Welcome to Big TicTacToe!",
+            "The goal is to win the big game. Winning a\n"+\
+            "little game earns you its place in the big\n"+\
+            "game. One move's position determines which\n"+\
+            "of the little games the next player can play.\n"+\
+            "Do you want to play against a computer or\n"+\
+            "another player?",
+            "Computer","Player")
+        againstComputer = d.result
+        if againstComputer:
+            self.screen.onscreenclick(self.playComputer)
+        else:
+            self.screen.onscreenclick(self.play)
         self.screen.listen()
     def think(self):
         lst = [-float("inf") for _ in range(81)]
@@ -231,8 +275,6 @@ class Display:
             self.tut3.lt(90)
         self.tut3.pu()
     def play(self,x,y):
-        if self.board.winner != '':
-            return
         row1 = math.floor(y)
         col1 = math.floor(x)
         if self.pos == (-1,-1):
@@ -277,8 +319,11 @@ class Display:
         except IndexError:
             return
         self.highlight()
-        if self.turn == 1:
-            time.sleep(1)
-            self.think()
+    def playComputer(self,x,y):
+        self.screen.onscreenclick(None) ## disallow player move during PC turn
+        self.play(x,y)
+        time.sleep(1)
+        self.think()
+        self.screen.onscreenclick(self.playComputer)
 d = Display()
 turtle.mainloop()
