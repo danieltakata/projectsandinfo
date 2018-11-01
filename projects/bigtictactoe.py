@@ -275,6 +275,8 @@ class Display:
             self.tut3.lt(90)
         self.tut3.pu()
     def play(self,x,y):
+        if self.board.winner != '':
+            return
         row1 = math.floor(y)
         col1 = math.floor(x)
         if self.pos == (-1,-1):
@@ -322,8 +324,9 @@ class Display:
     def playComputer(self,x,y):
         self.screen.onscreenclick(None) ## disallow player move during PC turn
         self.play(x,y)
-        time.sleep(1)
-        self.think()
-        self.screen.onscreenclick(self.playComputer)
+        if self.board.winner == '':
+            time.sleep(1)
+            self.think()
+            self.screen.onscreenclick(self.playComputer)
 d = Display()
 turtle.mainloop()
