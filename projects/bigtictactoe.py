@@ -188,10 +188,13 @@ class Display:
         self.tut1.pu()
         self.highlight()
         d = BooleanDialog("Welcome to Big TicTacToe!",
-            "The goal is to win the big game. Winning a\n"+\
-            "little game earns you its place in the big\n"+\
-            "game. One move's position determines which\n"+\
-            "of the little games the next player can play.\n"+\
+            "There is one, large game of tic-tac-toe, and\n"+\
+            "your goal is to win it. To capture a cell in\n"+\
+            "the big game you must win the game in that\n"+\
+            "cell.\n"+\
+            "Here's the catch: your move determines which\n"+\
+            "square your opponent is allowed to play in.\n"+\
+            "\n"+\
             "Do you want to play against a computer or\n"+\
             "another player?",
             "Computer","Player")
